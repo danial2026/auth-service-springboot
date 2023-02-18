@@ -103,8 +103,13 @@ public class UserServiceImpl implements UserService {
         UserEntity savedUser = userRepository.save(user);
     }
 
+    /* (non-Javadoc)
+     * @see com.springboot.server.authenticationservice.service.user.UserService#upgradeAuthorization(com.springboot.server.authenticationservice.dto.UpgradeAuthorizationDTO)
+     */
     @Override
     public void upgradeAuthorization(UpgradeAuthorizationDTO upgradeAuthorizationDTO) throws BusinessServiceException {
+        // TODO : read this from `application-dev.yml` file 
+        //  PS: i know this is not secure but its 3 in the morning and i really need to sleep
         if (upgradeAuthorizationDTO.getAdminUsername().equals("danial") && upgradeAuthorizationDTO.getAdminPassword().equals("password") ) {
             UserEntity userEntity = authenticationService.getAuthenticatedUser();
             userEntity.setRoleEntities(new HashSet<>() {{
@@ -171,13 +176,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserEntity> findAll() throws BusinessServiceException {
-        return userRepository.findAll();
-    }
-
-    @Override
-    public Optional<UserEntity> findByUsername(String username) throws BusinessServiceException {
-        return userRepository.findByUsername(username);
+    public ProfileDTO findByUsername(String username) throws BusinessServiceException {
+        Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isEmpty()) {
+            throw new UserServiceException(ErrorMessage.USER_IS_NOT_FOUND);
+        }
+        return convertEntityToDTO(optionalUser.get());
     }
 
     @Override
@@ -325,6 +329,18 @@ public class UserServiceImpl implements UserService {
      */
     private String generateActivationCode() {
         return generateRandomCode();
+    }
+
+    /**
+     * @param userEntity
+     * @return
+     */
+    ProfileDTO convertEntityToDTO(UserEntity userEntity) {
+        ProfileDTO profileDTO = new ProfileDTO();
+        profileDTO.setFullName(userEntity.getUserProfileEntity().getFullName());
+        profileDTO.setBio(userEntity.getUserProfileEntity().getBio());
+        profileDTO.setBirthday(userEntity.getUserProfileEntity().getBirthday());
+        return profileDTO;
     }
 }
 

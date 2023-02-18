@@ -90,16 +90,8 @@ public interface UserService {
      * @return
      * @throws BusinessServiceException
      */
-    Optional<UserEntity> findByUsername(String username) throws BusinessServiceException;
-
-    /**
-     * returns all user entities
-     *
-     * @return
-     * @throws BusinessServiceException
-     */
-    List<UserEntity> findAll() throws BusinessServiceException;
-
+    ProfileDTO findByUsername(String username) throws BusinessServiceException;
+    
     /**
      * first check if a user with this userIdentity exist then it will generate a new recoveryCode and send a request to SMS service to send it
      *

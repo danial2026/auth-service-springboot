@@ -4,18 +4,17 @@ import com.springboot.server.authenticationservice.dto.*;
 import com.springboot.server.authenticationservice.entity.UserDetailsEntity;
 import com.springboot.server.authenticationservice.exception.BusinessServiceException;
 import com.springboot.server.authenticationservice.service.user.UserService;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -166,19 +165,6 @@ public class UserREST {
     }
 
     /**
-     * return all users (only for testing , remove for production)
-     *
-     * @return
-     * @throws BusinessServiceException
-     */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> findAll() throws BusinessServiceException {
-
-        return ResponseEntity.ok(userService.findAll());
-    }
-
-    /**
      *  returns current user profile
      *
      * @param userDetails
@@ -187,9 +173,9 @@ public class UserREST {
      */
     @GetMapping(value = "/me/profile", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getCurrentUserProfile(@AuthenticationPrincipal UserDetailsEntity userDetails) throws BusinessServiceException {
-
-//        return ResponseEntity.ok(userService.getUserProfile(userDetails.getUsername(), userDetails.getUsername()));
-        return new ResponseEntity<>(HttpStatus.OK);
+        
+        ProfileDTO profileDTO = userService.findByUsername(userDetails.getUsername());
+        return ResponseEntity.ok(profileDTO);
     }
 
     /**
