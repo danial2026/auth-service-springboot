@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+
+  mongodb:
+    image: 'mongo:bionic'
+    container_name: mongodbdev
+    environment:
+      - MONGO_LOG_DIR=/dev/null
+      - MONGO_INITDB_ROOT_USERNAME=USERNAME_MONGO
+      - MONGO_INITDB_ROOT_PASSWORD=PASSWORD_MONGO
+    volumes:
+      - /databaseMongoStorageADS:/data/db
+    ports:
+      - '67017:27017'
+    restart: unless-stopped
+
+  redis-local:
+    image: "redis:6.2-alpine"
+    container_name: redislocal
+    command: redis-server --save 20 1 --loglevel warning --requirepass REDIS_PASSWORD
+    ports:
+      - "8379:6379"
+    volumes:
+      - cache:/data
+    restart: unless-stopped
+
+networks:
+  default:
+    external:
+      name: servernetwork

@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: auth-module
+  data:
+    mongodb:
+      database: auth_database
+      host: mongodbdev
+      port: 27017
+      username: USERNAME_MONGO
+      password: PASSWORD_MONGO
+
+  redis:
+    host: redisdev
+    port: 6379
+    password: REDIS_PASSWORD
+
+  jpa:
+    database: h2
+    hibernate:
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+      ddl-auto: create
+    generate-ddl: true
+    properties:
+      hibernate.format_sql: true
+    show-sql: true
+
+server:
+  port: 9002
+
+kavenegar:
+  api-key:
+    KAVENEGAR_YOUR_API_KEY
+  first-sender-number:
+    1000596446
+  second-sender-number:
+    2000500666
+  third-sender-number:
+    10008663
+  fourth-sender-number:
+    0018018949161
+
+security:
+  basic:
+    enable: false
+
+  jwt:
+    uri: /api/v1/users/**
+    header: Authorization
+    prefix: Bearer
+    expiration: 2592000
+    secret: JWT_SECRET_KEY
+
+  refresh:
+    uri: /api/v1/users/**
+    header: Authorization
+    prefix: Bearer
+    expiration: 7776000
+    secret: REFRESH_JWT_SECRET_KEY
+
+  service:
+    username: JWT_SERVICE_USERNAME
+    password: JWT_SERVICE_PASSWORD
