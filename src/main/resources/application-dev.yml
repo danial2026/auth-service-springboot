@@ -45,15 +45,15 @@ security:
     uri: /api/v1/users/**
     header: Authorization
     prefix: Bearer
-    expiration: 2592000
-    secret: JWT_SECRET_KEY
+    expiration: 7776000
+    secret: egwergwerdsvergafswrgewasdvgra
 
   refresh:
     uri: /api/v1/users/**
     header: Authorization
     prefix: Bearer
-    expiration: 7776000
-    secret: REFRESH_JWT_SECRET_KEY
+    expiration: 23328000
+    secret: REFRESH_egwergwerdsvergafswrgewasdvgra
 
   service:
     username: JWT_SERVICE_USERNAME
