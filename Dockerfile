@@ -10,4 +10,4 @@ RUN mvn dependency:go-offline
 
 COPY src/ ./src/
 
-RUN target=/root/.m2/repository mvn spring-boot:run
+RUN mvn spring-boot:run
