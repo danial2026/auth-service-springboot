@@ -4,10 +4,7 @@ spring:
   data:
     mongodb:
       database: auth_database
-      host: mongodbdev
-      port: 27017
-      username: USERNAME_MONGO
-      password: PASSWORD_MONGO
+      uri: mongodb://USERNAME_MONGO:PASSWORD_MONGO@mongodbdev:27017
 
   redis:
     host: redisdev

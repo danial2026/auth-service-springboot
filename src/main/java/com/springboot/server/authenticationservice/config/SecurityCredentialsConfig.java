@@ -55,11 +55,12 @@ public class SecurityCredentialsConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(new JwtTokenAuthenticationFilter(serviceUsername, jwtConfig, tokenProvider, userRepository), UsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, baseUrl + "/users/up").permitAll()
                 .antMatchers(HttpMethod.POST, baseUrl + "/users/signin").permitAll()
                 .antMatchers(HttpMethod.POST, baseUrl + "/users/signin/refresh-token").permitAll()
                 .antMatchers(HttpMethod.PUT, baseUrl + "/users/signin/forgot-password").anonymous()
                 .antMatchers(HttpMethod.PUT, baseUrl + "/users/signin/reset-password").anonymous()
-                .antMatchers(HttpMethod.POST, baseUrl + "/users").anonymous()
+                .antMatchers(HttpMethod.POST, baseUrl + "/users/signup").anonymous()
                 .antMatchers(HttpMethod.POST, baseUrl + "/users/verify").anonymous()
                 .antMatchers(HttpMethod.POST, baseUrl + "/users/resend-verification-code").anonymous()
                 .anyRequest().authenticated();

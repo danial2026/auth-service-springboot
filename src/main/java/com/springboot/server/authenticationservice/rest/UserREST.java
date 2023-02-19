@@ -23,6 +23,12 @@ public class UserREST {
 
     private final UserService userService;
 
+    @GetMapping(value = "/up")
+    public ResponseEntity<?> isUp() throws BusinessServiceException {
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     /**
      * register user
      *
@@ -30,12 +36,14 @@ public class UserREST {
      * @return
      * @throws BusinessServiceException
      */
-    @PostMapping(value = "/")
+    @PostMapping(value = "/signup")
     public ResponseEntity<Void> createUser(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult errors) throws BusinessServiceException {
 
-        if (errors.hasErrors()) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+        System.out.println("396");
+        // if (errors.hasErrors()) {
+        //     return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        // }
+        System.out.println("39");
         userService.registerUser(signUpDTO);
         return new ResponseEntity<>(HttpStatus.OK);
     }
