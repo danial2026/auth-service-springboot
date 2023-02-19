@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+@CrossOrigin(origins = {"http://localhost:3000","https://auth.danials.space"})
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = {"http://localhost:3000","https://auth.danials.space"})
 public class UserREST {
 
     private final UserService userService;
