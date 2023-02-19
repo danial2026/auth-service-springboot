@@ -1,0 +1,11 @@
+version: '3'
+services:
+  auth-service:
+    build: .
+    ports:
+      - "9002:9002"
+
+networks:
+  default:
+    external:
+      name: servernetwork
