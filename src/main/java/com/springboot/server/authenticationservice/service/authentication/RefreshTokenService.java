@@ -23,10 +23,10 @@ import java.util.UUID;
 @Service
 public class RefreshTokenService {
 
-    @Value("${security.refresh.expiration:#{24*60*60*90}}")
+    @Value("${security.refresh.expiration:#{24*60*60*270}}")
     private Long refreshTokenDurationMs;
 
-    @Value("${security.jwt.expiration:#{24*60*60*30}}")
+    @Value("${security.jwt.expiration:#{24*60*60*90}}")
     private Long tokenDurationMs;
 
     @Autowired

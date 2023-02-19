@@ -24,7 +24,7 @@ public class UserREST {
     private final UserService userService;
 
     @GetMapping(value = "/up")
-    public ResponseEntity<?> isUp() throws BusinessServiceException {
+    public ResponseEntity<?> isUp() {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -34,29 +34,34 @@ public class UserREST {
      *
      * @param signUpDTO
      * @return
-     * @throws BusinessServiceException
      */
     @PostMapping(value = "/signup")
-    public ResponseEntity<Void> createUser(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult errors) throws BusinessServiceException {
+    public ResponseEntity<Void> createUser(@Valid @RequestBody SignUpDTO signUpDTO, BindingResult errors) {
+        if (errors.hasErrors()) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        try {
+            userService.registerUser(signUpDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
 
-        System.out.println("396");
-        // if (errors.hasErrors()) {
-        //     return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        // }
-        System.out.println("39");
-        userService.registerUser(signUpDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        } 
     }
 
     /**
      * @param userIdentity
      * @return
-     * @throws BusinessServiceException
      */
     @PostMapping(value = "/resend-verification-code")
-    public ResponseEntity<Void> resendVerificationCode(@RequestParam(name = "userIdentity") final String userIdentity) throws BusinessServiceException {
-        userService.resendVerificationCode(userIdentity);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> resendVerificationCode(@RequestParam(name = "userIdentity") final String userIdentity) {
+        try {
+            userService.resendVerificationCode(userIdentity);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        } 
     }
 
     /**
@@ -64,112 +69,139 @@ public class UserREST {
      *
      * @param activationCodeDTO
      * @return
-     * @throws BusinessServiceException
      */
     @PostMapping(value = "/verify")
-    public ResponseEntity<Void> verifyUser(@Valid @RequestBody ActivationCodeDTO activationCodeDTO, BindingResult errors) throws BusinessServiceException{
-
+    public ResponseEntity<Void> verifyUser(@Valid @RequestBody ActivationCodeDTO activationCodeDTO, BindingResult errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        userService.verifyUser(activationCodeDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            userService.verifyUser(activationCodeDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }  
     }
 
     /**
      * @param loginDTO
      * @return
-     * @throws BusinessServiceException
      */
     @PostMapping(value = "/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO, BindingResult errors) throws BusinessServiceException {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO, BindingResult errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        Authentication authentication = userService.authenticate(loginDTO);
-        String jwtToken = userService.generateJWTToken(authentication);
-        String refreshToken = userService.generateRefreshToken(loginDTO.getUsername(), jwtToken);
+        try {
+            Authentication authentication = userService.authenticate(loginDTO);
+            String jwtToken = userService.generateJWTToken(authentication);
+            String refreshToken = userService.generateRefreshToken(loginDTO.getUsername(), jwtToken);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken, refreshToken));
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwtToken, refreshToken));
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
 
     /**
      * @param request
      * @return
-     * @throws BusinessServiceException
      */
     @PostMapping(value = "/signin/refresh-token")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request, BindingResult errors) throws BusinessServiceException {
+    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request, BindingResult errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        String requestRefreshToken = request.getRefreshToken();
-        String requestLatestToken = request.getAccessToken();
-        return ResponseEntity.ok(userService.refreshToken(requestRefreshToken, requestLatestToken));
+        try {
+            String requestRefreshToken = request.getRefreshToken();
+            String requestLatestToken = request.getAccessToken();
+            return ResponseEntity.ok(userService.refreshToken(requestRefreshToken, requestLatestToken));
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
      * @param userIdentity Can be phone number or email or username.
      * @return
-     * @throws BusinessServiceException
      */
     @PutMapping(value = "/signin/forgot-password")
-    public ResponseEntity<Void> forgotPassword(@RequestParam(name = "userIdentity") final String userIdentity) throws BusinessServiceException {
-        userService.forgotPassword(userIdentity);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> forgotPassword(@RequestParam(name = "userIdentity") final String userIdentity) {
+        try {
+            userService.forgotPassword(userIdentity);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
      * @param resetPasswordDTO
      * @return
-     * @throws BusinessServiceException
      */
     @PutMapping(value = "/signin/reset-password")
-    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO, BindingResult errors) throws BusinessServiceException {
-
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordDTO resetPasswordDTO, BindingResult errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        userService.resetPassword(resetPasswordDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            userService.resetPassword(resetPasswordDTO);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
      * @param resetPasswordDTO
      * @return
-     * @throws BusinessServiceException
      */
     @PutMapping(value = "/signin/change-password")
-    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetailsEntity userDetails, @Valid @RequestBody ChangePasswordDTO resetPasswordDTO, BindingResult errors) throws BusinessServiceException {
-
+    public ResponseEntity<Void> changePassword(@AuthenticationPrincipal UserDetailsEntity userDetails, @Valid @RequestBody ChangePasswordDTO resetPasswordDTO, BindingResult errors) {
         if (errors.hasErrors()) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        userService.changePassword(resetPasswordDTO, userDetails.getUsername());
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            userService.changePassword(resetPasswordDTO, userDetails.getUsername());
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
      * @return
-     * @throws BusinessServiceException
      */
     @GetMapping(value = "/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsEntity userDetails) throws BusinessServiceException {
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetailsEntity userDetails) {
+        try {
+            userService.logout(userDetails.getUsername());
+            return ResponseEntity.ok(HttpStatus.OK);
 
-        userService.logout(userDetails.getUsername());
-        return ResponseEntity.ok(HttpStatus.OK);
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
      * @return
-     * @throws BusinessServiceException
      */
     @GetMapping(value = "/delete-account")
-    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal UserDetailsEntity userDetails) throws BusinessServiceException {
+    public ResponseEntity<?> deleteAccount(@AuthenticationPrincipal UserDetailsEntity userDetails) {
+        try {
+            userService.deleteAccount(userDetails.getUsername());
+            return ResponseEntity.ok(HttpStatus.OK);
 
-        userService.deleteAccount(userDetails.getUsername());
-        return ResponseEntity.ok(HttpStatus.OK);
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -177,13 +209,16 @@ public class UserREST {
      *
      * @param userDetails
      * @return
-     * @throws BusinessServiceException
      */
     @GetMapping(value = "/me/profile", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCurrentUserProfile(@AuthenticationPrincipal UserDetailsEntity userDetails) throws BusinessServiceException {
-        
-        ProfileDTO profileDTO = userService.findByUsername(userDetails.getUsername());
-        return ResponseEntity.ok(profileDTO);
+    public ResponseEntity<?> getCurrentUserProfile(@AuthenticationPrincipal UserDetailsEntity userDetails) {
+        try {
+            ProfileDTO profileDTO = userService.findByUsername(userDetails.getUsername());
+            return ResponseEntity.ok(profileDTO);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -191,12 +226,16 @@ public class UserREST {
      *
      * @param phoneNumber
      * @return
-     * @throws BusinessServiceException
      */
     @PutMapping(value = "/signin/send-verification-code-new-phone-number")
-    public ResponseEntity<Void> sendVerificationCodeNewPhoneNumber(@RequestParam(name = "phoneNumber") final String phoneNumber) throws BusinessServiceException {
-        userService.sendVerificationCodeNewPhoneNumber(phoneNumber);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> sendVerificationCodeNewPhoneNumber(@RequestParam(name = "phoneNumber") final String phoneNumber) {
+        try {
+            userService.sendVerificationCodeNewPhoneNumber(phoneNumber);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     /**
@@ -204,11 +243,15 @@ public class UserREST {
      *
      * @param code
      * @return
-     * @throws BusinessServiceException
      */
     @PutMapping(value = "/verify-new")
-    public ResponseEntity<Void> updatePhoneNumber(@RequestParam(name = "code") final String code) throws BusinessServiceException {
-        userService.verifyNewPhoneNumber(code);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> updatePhoneNumber(@RequestParam(name = "code") final String code) {
+        try {
+            userService.verifyNewPhoneNumber(code);
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        } catch (BusinessServiceException errorResponse) {
+            return new ResponseEntity(errorResponse.getApiError(), HttpStatus.BAD_REQUEST);
+        }
     }
 }
