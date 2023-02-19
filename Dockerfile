@@ -1,8 +1,13 @@
-FROM adoptopenjdk/openjdk11:latest
+FROM maven:3.8.1-jdk-11-openj9 AS build
 MAINTAINER danial "danial@danials.space"
 
 EXPOSE 9002
-RUN mkdir /opt/authentication-module
-WORKDIR ./authentication-module
-COPY ./target/authentication-module-0.0.1-SNAPSHOT.jar /opt/authentication-module
-CMD ["java", "-jar", "-Dspring.profiles.active=prod", "/opt/authentication-module/authentication-module-0.0.1-SNAPSHOT.jar"]
+
+WORKDIR /app
+
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY src/ ./src/
+
+RUN --mount=type=cache,target=/root/.m2/repository mvn spring-boot:run

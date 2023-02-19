@@ -33,6 +33,11 @@ mvn spring-boot:run
 ```
 > This will start the application on http://localhost:8080.
 
+Build command:
+```bash
+mvn clean package
+```
+
 #### ⚠️ Note on Maven version :
 This application was built and tested with Apache Maven 3.9.0. If you encounter any issues with other versions of Maven, please try using version 3
 
