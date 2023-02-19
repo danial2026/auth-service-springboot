@@ -19,6 +19,7 @@ import javax.validation.Valid;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "http://localhost:3000, https://auth.danials.space")
 public class UserREST {
 
     private final UserService userService;
