@@ -14,6 +14,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class ProfileDTO {
 
+    private String username;
+
     private String fullName;
 
     private Date birthday;

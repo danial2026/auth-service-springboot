@@ -333,10 +333,11 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @param userEntity
-     * @return
+     * @return ProfileDTO
      */
     ProfileDTO convertEntityToDTO(UserEntity userEntity) {
         ProfileDTO profileDTO = new ProfileDTO();
+        profileDTO.setUsername(userEntity.getUsername());
         profileDTO.setFullName(userEntity.getUserProfileEntity().getFullName());
         profileDTO.setBio(userEntity.getUserProfileEntity().getBio());
         profileDTO.setBirthday(userEntity.getUserProfileEntity().getBirthday());
