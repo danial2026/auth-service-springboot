@@ -2,6 +2,11 @@
 
 This is a basic authentication service built using the Spring Boot framework and the Model-View-Controller (MVC) architecture. The service allows users to register, login, and manage their account information.  
 
+## Medium Post
+I've also written a Medium post about this project, 
+which you can read at https://medium.com/@sadcat/build-your-own-authentication-service-with-spring-boot-cacd22d72851.
+The post goes into more detail about the development process and how to use the app.
+
 ## Prerequisites
 To build and run this application, you'll need the following tools:
 - Docker
