@@ -55,7 +55,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String generateJWTToken(Authentication authentication) {
-        return tokenProvider.generateToken(authentication);
+        UserEntity userFromAuthentication = userRepository.findByUsername(authentication.getName()).get();
+
+        return tokenProvider.generateToken(authentication, userFromAuthentication.getId());
     }
 
     @Override
@@ -68,7 +70,7 @@ public class UserServiceImpl implements UserService {
                 UserEntity userFromDataBase = userRepository.findById(findRefreshToken.getUserId()).get();
                 String userNameFromDataBase = userFromDataBase.getUsername();
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userNameFromDataBase, null);
-                String token = tokenProvider.generateToken(authentication);
+                String token = tokenProvider.generateToken(authentication, userFromDataBase.getId());
                 RefreshTokenEntity updatedRefreshTokenEntity = refreshTokenService.updateRefreshToken(userNameFromDataBase, token, requestRefreshToken);
                 return new TokenRefreshResponse(updatedRefreshTokenEntity.getToken(), updatedRefreshTokenEntity.getRefreshToken());
             }

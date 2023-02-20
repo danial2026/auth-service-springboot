@@ -41,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return authentication;
         } catch (Exception ex) {
-            if (ex.getMessage().equals("2061")){
+            if (ex.getMessage().equals(ErrorMessage.USER_NOT_ACTIVATED.getMessage())){
                 throw new AuthenticationServiceException(ErrorMessage.USER_NOT_ACTIVATED);
             }
             throw new AuthenticationServiceException(ErrorMessage.USER_IS_NOT_FOUND);
