@@ -33,7 +33,7 @@ public class JwtTokenProvider {
                 .claim("alg", "HS256")
                 .setIssuedAt(new Date(now))
                 .setExpiration(new Date(now + jwtConfig.getExpiration() * 1000L))  // in milliseconds
-                .signWith(SignatureAlgorithm.RS256, jwtConfig.getSecret().getBytes())
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecret().getBytes())
                 .compact();
     }
 
